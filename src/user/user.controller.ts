@@ -20,6 +20,7 @@ export class UserController {
     async show(@Param('id', ParseIntPipe) id: number) {
         return {users:{}, id}
     }
+    
 
     @Put(':id')
     async update(@Body() {email, name, password}: UpdatePutUserDTO, @Param('id', ParseIntPipe) id: number){
