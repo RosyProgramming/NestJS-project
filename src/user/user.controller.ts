@@ -9,21 +9,21 @@ import { ParamId } from 'src/decorators/param-id.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/enums/role.enum';
 import { RoleGuard } from 'src/guards/role.guard';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
-@UseGuards(AuthGuard, RoleGuard)
+@Roles(Role.Admin)
+@UseGuards(ThrottlerGuard,AuthGuard, RoleGuard)
 @UseInterceptors(LogInterceptor)
 @Controller('users')
 export class UserController {
     
     constructor(private readonly UserService: UserService) {}
    
-    @Roles(Role.Admin)
     @Post()
     async create(@Body() data: CreateUserDTO) {
         return this.UserService.create(data);
     }
 
-    @Roles(Role.Admin)
     @Get()
     async list(){
         return this.UserService.list()
@@ -35,19 +35,16 @@ export class UserController {
         return this.UserService.show(id);
     }
     
-    @Roles(Role.Admin)
     @Put(':id')
     async update(@Body() data: UpdatePutUserDTO, @Param('id', ParseIntPipe) id: number){
         return this.UserService.update(id, data)
     }
     
-    @Roles(Role.Admin)
     @Patch(':id')
     async updatePartial(@Body() data: UpdatePatchUserDTO, @Param('id', ParseIntPipe) id: number){
         return this.UserService.updatePartial(id, data)
     }
 
-    @Roles(Role.Admin)
     @Delete(':id')
     async delete(@Param('id', ParseIntPipe) id: number){
         return this.UserService.delete(id);
